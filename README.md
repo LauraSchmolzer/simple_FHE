@@ -26,7 +26,7 @@ The secret key is a vector of $k$ random polynomials:
 To encrypt a message $M \in R_p$ whith plaintext space $R_p := (\mathbb{Z}/p\mathbb{Z})/(X^N + 1)$ :
 - Let the secret key be a list of *k* random polynomials $S = (S_0, \dots, S_{k-1}) \in R^k$  from $R_q := \mathbb{Z}_q[X]/(X^N + 1)$  
 - Ciphertext modulus $q$  and plaintext modulus $ p$ 
-- A scaling factor $\Delta = \floor(q / p)$  
+- A scaling factor $\Delta = \lfloor q / p \rfloor$  
 
 ## Encoding message
 

@@ -24,7 +24,7 @@ The secret key is a vector of $k$ random polynomials:
 # Encryption Procedure 
 
 To encrypt a message $M \in R_p$ whith plaintext space $R_p := (\mathbb{Z}/p\mathbb{Z})/(X^N + 1)$ :
-- Let the secret key be a list of *k* random polynomials $S = (S_0, \dots, S_{k-1}) \in R^k$  from $R_q := \mathbb{Z}_q[X]/(X^N + 1)$  
+- Let the secret key be a list of *k* random polynomials $S = (S_0, \dots, S_{k-1}) \in R^k$ from $R_q := \mathbb{Z}_q[X]/(X^N + 1)$  
 - Ciphertext modulus $q$  and plaintext modulus $ p$ 
 - A scaling factor $\Delta = \lfloor q / p \rfloor$  
 
@@ -51,5 +51,17 @@ This body ensures that recovering the secret key becomes a hard lattice problem 
 ## The ciphertext
 The final GLWE ciphertext is :
 $$C = (A_0, ..., A_{k-1},B)$$
-Where $(A_0,...,A_{k-1})$ is the mask and $B$ is the body.
+where $(A_0,...,A_{k-1})$ is the mask and $B$ is the body.
+
+# Decryption Procedure 
+To decrypt the ciphertext $$C = (A_0, ..., A_{k-1},B)$$ :
+- The secret key $S = (S_0, \dots, S_{k-1}) \in R^k$ is needed.
+
+We ahve to compute $$ B - \displaystyle\sum\limits_{i=0}^{k-1} (A_i \cdot S_i) = \Delta \cdot M + E (\mod q)$$ where if $E$ is small enough in $\Delta \cdot M + E (\mod q)$$, diving by $\Delta$ and rounding recovers $M$.
+
+However, when preforming an operation on encrypted data in FHE, the 'noise' inside the ciphertext grows. When the noise grows too large, it may overlap with the actual data. This may lead to a false decryption. Therefor, bootstrapping is needed.
+
+# What is Bootstrapping?
+
+Bootstrapping is a trick to reset that noise back to a low level by running the decryption circuit through the homomorphic evaluation process. The process is done by the Cloud/Server (who has no decryption keys). It does this by taking the very noisy ciphertext and encrypt the Secret key with istelf, creating an encrypted Secret key. Then, the decryption algorithm is run inside the encrypted domain using this key. 
 

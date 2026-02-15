@@ -5,7 +5,7 @@ import numpy as np
 
 k = 2                       # number of mask polynomials
 N = 4                       # degree of polynomials
-q = 4                       # ciphertext modulus
+q = 32                      # ciphertext modulus
 p = 2                       # plaintext modulus
 delta = q // p              # scaling factor for messages
 
@@ -31,9 +31,32 @@ def encrypt(S,M):
     e = sample_noise(N)
 
     encoded_m = encode(M)
-    
+
     ## Compute and return the body
     sum_AS = sum(A[i]*S[i] for i in range(k))
 
     B = (sum_AS + encoded_m + e) % q
     return (A,B)
+
+# ----------------------------- Decryption Procedure -----------------------------
+
+def decrypt(S, C):
+    A, B = C
+    
+    sum_AS = sum(A[i] * S[i] for i in range(k))
+    
+    M_tilde = (B - sum_AS) % q
+    
+    # Divide by delta and round
+    M = np.round(M_tilde / delta).astype(int) % p
+    
+    return M
+
+# ----------------------------- Simple test -----------------------------
+M = np.array([1, 0, 1, 1])  # plaintext polynomial in R_p
+
+C = encrypt(S, M)
+M_dec = decrypt(S, C)
+
+print("Original message:", M)
+print("Decrypted message:", M_dec)

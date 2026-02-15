@@ -41,7 +41,7 @@ $$\Delta \cdot M \in R_q$$
 ## Compute the body
 The body polynomial is computed as:
 
-$$B = sum_{i=0 to k-1} (A_i \cdot S_i) + \Delta \cdot M + E (\mod q)$$
+$$B = \displaystyle\sum\limits_{i=0}^{k-1} (A_i \cdot S_i) + \Delta \cdot M + E (\mod q)$$
 
 This body ensures that recovering the secret key becomes a hard lattice problem (CVP) by:
 - Mixing the random masks with the secret key

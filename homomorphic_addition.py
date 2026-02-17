@@ -5,8 +5,8 @@ import numpy as np
 
 k = 2                       # number of mask polynomials
 N = 4                       # degree of polynomials
-q = 32                      # ciphertext modulus
-p = 2                       # plaintext modulus
+q = 128                     # ciphertext modulus
+p = 8                       # plaintext modulus
 delta = q // p              # scaling factor for messages
 
 
@@ -61,7 +61,6 @@ def encrypt(S,M):
     for i in range(k):
         sum_AS = (sum_AS + multiply_polynomials(A[i], S[i])) % q # compute the sum
 
-
     B = (sum_AS + encoded_m + e) % q
     return (A,B)
 
@@ -74,7 +73,6 @@ def decrypt(S, C):
 
     for i in range(k):
         sum_AS = (sum_AS + multiply_polynomials(A[i], S[i])) % q # compute the sum
-
     
     M_tilde = (B - sum_AS) % q
     
@@ -83,12 +81,44 @@ def decrypt(S, C):
     
     return M
 
-# ----------------------------- Simple test -----------------------------
+# ----------------------------- Addition of two messages -----------------------------
 
-M = np.array([1, 0, 1, 1])  # plaintext polynomial in R_p
+def adddition_two_ciphers(C1,C2):
+    A1,B1 = C1
+    A2,B2 = C2
+
+    B = (B1+B2) % q
+
+    A = [(A1[i] + A2[i]) % q for i in range(k)]
+
+    return (A,B)
+
+# ----------------------------- Simple tests -----------------------------
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+M = np.array([1, 2, 3, 4])  # plaintext polynomial in R_p
 
 C = encrypt(S, M)
 M_dec = decrypt(S, C)
 
 print("Original message:", M)
 print("Decrypted message:", M_dec)
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+M1 = np.array([1, 2, 3, 4])  # plaintext polynomial in R_p
+M2 = np.array([4, 3, 2, 1]) 
+
+C1 = encrypt(S, M1)
+C2 = encrypt(S, M2)
+
+C = adddition_two_ciphers(C1,C2)
+M_dec = decrypt(S,C)
+
+M_check = (M1+M2) % p
+
+print("Original messages:", M1, M2)
+print("Decrypted message:", M_dec)
+print("Expected message:", M_check)
+
+
+# %%

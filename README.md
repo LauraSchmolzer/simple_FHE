@@ -67,6 +67,13 @@ We ahve to compute $$ B - \displaystyle\sum\limits_{i=0}^{k-1} (A_i \cdot S_i) =
 
 However, when preforming an operation on encrypted data in FHE, the 'noise' inside the ciphertext grows. When the noise grows too large, it may overlap with the actual data. This may lead to a false decryption. Therefor, bootstrapping is needed.
 
+
+## 👾 Addition of two messages
+When having two messages encrypted by a GLWE under secret key $S$, we can add these ciphertexts together. The result will be a new GLWE ciphertext encrypting the message $M + M'$ under the secret key $S$, with noise that grew a bit.
+
+$C^{(+)} = C + C' = (A_0+A_0',..., A_{k-1}+A_{k-1}',B+B') \in GLWE_{S, \lambda'}(\Delta(M+M')) \subset R_q^{k+1}
+
+
 ## 🔏 What is Bootstrapping?
 
 Bootstrapping is a trick to reset that noise back to a low level by running the decryption circuit through the homomorphic evaluation process. The process is done by the Cloud/Server (who has no decryption keys). It does this by taking the very noisy ciphertext and encrypt the Secret key with istelf, creating an encrypted Secret key. Then, the decryption algorithm is run inside the encrypted domain using this key. 

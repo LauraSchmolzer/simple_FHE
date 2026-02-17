@@ -1,4 +1,4 @@
-# Simple FHE toy
+# 👾 Simple FHE toy
 
 This repository experiments with Fully Homomorphic Encryption (FHE) based on the paper *Fully Homomorphic Encryption: A Mathematical Introduction* by Sara Logsdon. In FHE, we can compute on encrypted data without decrypting it.  
 
@@ -21,7 +21,13 @@ The secret key is a vector of $k$ random polynomials:
   $$R := \mathbb{Z}[X]/(X^N + 1)$$  
   with integer coefficients up to degree $N-1$.  
 
-# Encryption Procedure 
+## Multiplication on Polynomial rings
+As we multiply in the ring $R_q := (\mathbb{Z}/q\mathbb{Z})[X]/(X^N + 1)$, meaning all coefficients are reduced to mod q, numbers 'wrap around'. 
+
+Another crucial part is that $(X^N+q)$, meaning $X^N=-1$. This means that powers beyond degree $N-1$ wraps around with a sign flip. This makes the ring closed under addition and multiplication, as well as giving it a fixed size (degree $<N$).
+
+
+# 🔐 Encryption Procedure 
 
 To encrypt a message $M \in R_p$ whith plaintext space $R_p := (\mathbb{Z}/p\mathbb{Z})/(X^N + 1)$ :
 - Let the secret key be a list of *k* random polynomials $S = (S_0, \dots, S_{k-1}) \in R^k$ from $R_q := \mathbb{Z}_q[X]/(X^N + 1)$  
@@ -53,7 +59,7 @@ The final GLWE ciphertext is :
 $$C = (A_0, ..., A_{k-1},B)$$
 where $(A_0,...,A_{k-1})$ is the mask and $B$ is the body.
 
-# Decryption Procedure 
+# 🔓 Decryption Procedure 
 To decrypt the ciphertext $$C = (A_0, ..., A_{k-1},B)$$ :
 - The secret key $S = (S_0, \dots, S_{k-1}) \in R^k$ is needed.
 
@@ -61,7 +67,7 @@ We ahve to compute $$ B - \displaystyle\sum\limits_{i=0}^{k-1} (A_i \cdot S_i) =
 
 However, when preforming an operation on encrypted data in FHE, the 'noise' inside the ciphertext grows. When the noise grows too large, it may overlap with the actual data. This may lead to a false decryption. Therefor, bootstrapping is needed.
 
-# What is Bootstrapping?
+# 🔏 What is Bootstrapping?
 
 Bootstrapping is a trick to reset that noise back to a low level by running the decryption circuit through the homomorphic evaluation process. The process is done by the Cloud/Server (who has no decryption keys). It does this by taking the very noisy ciphertext and encrypt the Secret key with istelf, creating an encrypted Secret key. Then, the decryption algorithm is run inside the encrypted domain using this key. 
 

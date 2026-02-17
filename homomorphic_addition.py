@@ -25,6 +25,30 @@ def sample_polynomials(k,degree,mod):
 def sample_noise(degree):
     return np.random.randint(-1, 2, degree)  # toy Gaussian
 
+# Multiplication of ring polynomial
+def multiply_polynomials(poly1, poly2):
+    # Standard Polynomial multiplication
+    m = len(poly1)
+    n = len(poly2)
+    # The resulting polynomial has size m+n-1
+    prod = [0] * (m+n-1)
+
+    for i in range(m):
+        for j in range(n):
+            prod[i + j] += poly1[i] * poly2[j]
+
+    # Reduce module X^N + 1
+    for i in range(N,len(prod)):
+        prod[i-N] -= prod[i] # wrap around with sign flip
+
+    # Truncate to degree < N, get rid of leftover storage
+    result = prod[:N]
+
+    # Reduce coefficients mod q
+    result = [x % q for x in result]
+
+    return np.array(result) # convert to numpy array for easier handling
+
 # ----------------------------- Encryption Procedure -----------------------------
 def encrypt(S,M):
     A = sample_polynomials(k,N,q)
@@ -32,8 +56,11 @@ def encrypt(S,M):
 
     encoded_m = encode(M)
 
-    ## Compute and return the body
-    sum_AS = sum(A[i]*S[i] for i in range(k))
+    sum_AS = np.zeros(N, dtype=int)  # start with zero polynomial
+
+    for i in range(k):
+        sum_AS = (sum_AS + multiply_polynomials(A[i], S[i])) % q # compute the sum
+
 
     B = (sum_AS + encoded_m + e) % q
     return (A,B)
@@ -43,7 +70,11 @@ def encrypt(S,M):
 def decrypt(S, C):
     A, B = C
     
-    sum_AS = sum(A[i] * S[i] for i in range(k))
+    sum_AS = np.zeros(N, dtype=int)  # start with zero polynomial
+
+    for i in range(k):
+        sum_AS = (sum_AS + multiply_polynomials(A[i], S[i])) % q # compute the sum
+
     
     M_tilde = (B - sum_AS) % q
     
@@ -53,6 +84,7 @@ def decrypt(S, C):
     return M
 
 # ----------------------------- Simple test -----------------------------
+
 M = np.array([1, 0, 1, 1])  # plaintext polynomial in R_p
 
 C = encrypt(S, M)

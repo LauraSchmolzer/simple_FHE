@@ -63,7 +63,7 @@ where $(A_0,...,A_{k-1})$ is the mask and $B$ is the body.
 To decrypt the ciphertext $$C = (A_0, ..., A_{k-1},B)$$ :
 - The secret key $S = (S_0, \dots, S_{k-1}) \in R^k$ is needed.
 
-We ahve to compute $$ B - \displaystyle\sum\limits_{i=0}^{k-1} (A_i \cdot S_i) = \Delta \cdot M + E (\mod q)$$ where if $E$ is small enough in $\Delta \cdot M + E (\mod q)$$, diving by $\Delta$ and rounding recovers $M$.
+We have to compute $$B - \displaystyle\sum\limits_{i=0}^{k-1} (A_i \cdot S_i) = \Delta \cdot M + E (\mod q)$$ where if $E$ is small enough in $\Delta \cdot M + E (\mod q)$$, diving by $\Delta$ and rounding recovers $M$.
 
 However, when preforming an operation on encrypted data in FHE, the 'noise' inside the ciphertext grows. When the noise grows too large, it may overlap with the actual data. This may lead to a false decryption. Therefor, bootstrapping is needed.
 

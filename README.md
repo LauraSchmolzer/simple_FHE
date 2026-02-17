@@ -71,7 +71,7 @@ However, when preforming an operation on encrypted data in FHE, the 'noise' insi
 ## 👾 Addition of two messages
 When having two messages encrypted by a GLWE under secret key $S$, we can add these ciphertexts together. The result will be a new GLWE ciphertext encrypting the message $M + M'$ under the secret key $S$, with noise that grew a bit.
 
-$C^{(+)} = C + C' = (A_0+A_0',..., A_{k-1}+A_{k-1}',B+B') \in GLWE_{S, \lambda'}(\Delta(M+M')) \subset R_q^{k+1}$
+$C^{(+)} = C + C' = (A_0+A_0',..., A_{k-1}+A_{k-1}',B+B') \in GLWE_{S, \omega}(\Delta(M+M')) \subset R_q^{k+1}$
 
 
 ## 🔏 What is Bootstrapping?
